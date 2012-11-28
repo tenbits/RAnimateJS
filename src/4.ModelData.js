@@ -27,12 +27,15 @@ var ModelData = (function() {
 				data.duration = info[1] || '200ms';
 				data.timing = info[2] || 'linear';
 				data.delay = info[3] || '0';
+				
 				return data;
 			}
 		}
 		data.duration = '200ms';
 		data.timing = 'linear';
 		data.delay = '0';
+		
+		
 		return data;
 	}
 
@@ -65,6 +68,10 @@ var ModelData = (function() {
 			this.state = 0;
 			this.modelCount = this.model instanceof Array ? this.model.length : 1;
 			this.nextCount = 0;
+			
+			if (this.next != null) {
+				this.nextCount = this.next instanceof Array ? this.next.length : 1;
+			}
 		},
 		reset: function() {
 			this.state = 0;
@@ -83,8 +90,9 @@ var ModelData = (function() {
 				x.reset && x.reset();
 			}
 		},
-		getNext: function() {			
-			if (this.state === 0) {
+		getNext: function() {
+			//-console.log('getNext', this.state, this.modelCount, this.nextCount, this.model.prop, this);
+			if (this.state === 0) {				
 				this.state = 1;
 				return this;
 			}

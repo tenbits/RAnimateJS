@@ -39,7 +39,7 @@ var Model = Class({
 	},
 
 	apply: function(startCss, css) {
-		//console.log('apply', startCss, css);
+		//-console.log('apply', startCss, css);
 		startCss[prfx + 'transition'] = 'none';
 
 		var style = this.element.style;
