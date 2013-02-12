@@ -1,4 +1,6 @@
 
+var TransitionEvent = window.WebKitTransitionEvent || window.mozTransitionEvent || window.oTransitionEvent || window.TransitionEvent;
+
 var Model = Class({
 	Construct: function(models) {
 		this.stack = new Stack();
@@ -42,7 +44,9 @@ var Model = Class({
 		//-console.log('apply', startCss, css);
 		startCss[prfx + 'transition'] = 'none';
 
-		var style = this.element.style;
+		var style = this.element.style,
+			element = this.element;
+
 		if (startCss != null) {
 			for (var key in startCss) {
 				style.setProperty(key, startCss[key], '');
@@ -51,9 +55,36 @@ var Model = Class({
 		}
 
 		setTimeout(function() {
+			var fire;
 			for (var key in css){			
 				style.setProperty(key, css[key], '');
+				if (key in ImmediatCss){
+					(fire || (fire = [])).push(key);
+				}
 			}
+
+			if (fire == null || TransitionEvent == null){
+				return;
+			}
+
+			var eventName = getTransitionEndEvent();
+
+			for(var i = 0; i< fire.length; i++){
+				var event = new TransitionEvent(eventName, {
+					propertyName: fire[i],
+					bubbles: true, 
+					cancelable: true
+				});
+
+				element.dispatchEvent(event);
+			}
+
 		}, 0);
 	}
 });
+
+var ImmediatCss = {
+	'display': 1,
+	'font-family': 1,
+	'visibility': 1
+};
